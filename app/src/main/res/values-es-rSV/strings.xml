@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LaboratorioAndroid</string>
+    <string name="hello_message">Hola Mundo!</string>
+    <string name="ButtonText">Soy Bottones</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="title_activity_list_items">ListItemsActivity</string>
+    <string name="enableSomething">Enable Something</string>
+    <string name="btnLogin">Login</string>
+    <string name="defaultEmail">DefaultEmail</string>
+    <string name="blankDefaultEmail">email@domain.com</string>
+    <string name="sharedPrefFile">sharedPrefFile</string>
+    <string name="dialogMessage">sharedPrefFile</string>
+    <string name="dialogTitle">sharedPrefFile</string>
+    <string name="ok">sharedPrefFile</string>
+    <string name="cancel">sharedPrefFile</string>
+    <string name="switchOn">Switch is On</string>
+    <string name="switchOff">Switch is Off</string>
+    <string name="startChatButtonText">Start Chat</string>
+    <string name="chatSendText">Send</string>
+    <string name="outgoing">outgoing message</string>
+    <string name="incoming">incoming message</string>
+    <string name="startWeatherForecast">Weather Forecast</string>
+    <string name="minLabel">Min</string>
+    <string name="maxLabel">Max</string>
+    <string name="currentLabel">Current</string>
+</resources>

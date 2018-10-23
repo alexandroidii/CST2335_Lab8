@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CST2335_Lab3</string>
+    <string name="hello_message">Helluva World!</string>
+    <string name="ButtonText">I\'m a button</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="title_activity_list_items">ListItemsActivity</string>
+    <string name="enableSomething">Enable Something</string>
+    <string name="btnLogin">Login</string>
+    <string name="defaultEmail">DefaultEmail</string>
+    <string name="blankDefaultEmail">email@domain.com</string>
+    <string name="sharedPrefFile">sharedPrefFile</string>
+    <string name="dialogMessage">Would you like to finish this Activity?</string>
+    <string name="dialogTitle">Finish Activity?</string>
+    <string name="ok">Yes</string>
+    <string name="cancel">No</string>
+    <string name="switchOn">Switch is On</string>
+    <string name="switchOff">Switch is Off</string>
+    <string name="startChatButtonText">Start Chat</string>
+    <string name="chatSendText">Send</string>
+    <string name="outgoing">outgoing message</string>
+    <string name="incoming">incoming message</string>
+    <string name="startWeatherForecast">Weather Forecast</string>
+    <string name="minLabel">Min</string>
+    <string name="maxLabel">Max</string>
+    <string name="currentLabel">Current</string>
+
+</resources>
