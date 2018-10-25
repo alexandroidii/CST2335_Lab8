@@ -2,30 +2,37 @@ package com.example.alexr.cst2335_lab3;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ChatWindow extends AppCompatActivity {
+public class ChatWindow extends AppCompatActivity implements AdapterView.OnItemClickListener {
     protected static final String ACTIVITY_NAME = "1234 ChatWindow";
+    protected static final int MESSAGE_DETAILS_RESPONSE = 1;
 
     ChatDatabaseHelper chatDatabaseHelper;
 
     ListView chatListView;
     EditText chatMessageEditText;
     Button chatSendBtn;
+    Cursor cursor;
+    boolean isTablet = false;
 
     ArrayList<String> chatMessages = new ArrayList<>();
 
@@ -33,6 +40,17 @@ public class ChatWindow extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_window);
+
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.tabletMessageDetailFrame);
+        if (frameLayout == null) {
+            Log.i(ACTIVITY_NAME, "Fragment in Phone layout.");
+            isTablet = false;
+        } else {
+            Log.i(ACTIVITY_NAME, "Fragment in Tablet layout.");
+            isTablet = true;
+
+        }
+
         chatDatabaseHelper = new ChatDatabaseHelper(this);
         /* Source: https://stackoverflow.com/questions/15686555/display-back-button-on-action-bar
          *  Author: Inzimam Tariq IT
@@ -49,7 +67,7 @@ public class ChatWindow extends AppCompatActivity {
 
         SQLiteDatabase db = chatDatabaseHelper.getWritableDatabase();
 
-        Cursor cursor = db.rawQuery("select * from " + chatDatabaseHelper.TABLE_NAME, null);
+        cursor = db.rawQuery("select * from " + chatDatabaseHelper.TABLE_NAME, null);
 
         cursor.moveToFirst();
 
@@ -82,11 +100,53 @@ public class ChatWindow extends AppCompatActivity {
 
                     if (newRowId == -1) {
                         Log.i(ACTIVITY_NAME, "Chat message failed to write to database");
-                }
+                    }
                     messageAdapter.notifyDataSetChanged(); //this restarts the process of getCount()/getView()
                     chatMessageEditText.setText("");
                 });
 
+
+        /*
+         * Source: https://stackoverflow.com/questions/4709870/setonitemclicklistener-on-custom-listview
+         * Author: Charu
+         * Date: 2017-01-17
+         *
+         * Also used onitemclicklistener-with-custom-adapter-and-listview on stackoverflow.
+         * Author: coading fever
+         * date: 2012-06-29
+         */
+        chatListView.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int responseCode, Intent data) {
+        if (requestCode == MESSAGE_DETAILS_RESPONSE && responseCode == RESULT_OK) {
+            Log.i(ACTIVITY_NAME, "Returned to ChatWindow.onActivityResult");
+        } else {
+            super.onActivityResult(requestCode, responseCode, data);
+        }
+    }
+
+    /*
+    source: https://www.simplifiedcoding.net/bottom-navigation-android-example/
+    author: Belal Khan
+    Date: 2018-01-23
+    */
+    private boolean loadFragment(Fragment fragment, int frameId, Bundle bundle) {
+        //switching fragment
+
+        if(bundle != null){
+            fragment.setArguments(bundle);
+        }
+
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(frameId, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 
     /* Source: https://stackoverflow.com/questions/15686555/display-back-button-on-action-bar
@@ -98,6 +158,23 @@ public class ChatWindow extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+            Intent messageDetailsIntent = new Intent(ChatWindow.this, MessageDetails.class );
+            messageDetailsIntent.putExtra("messageId", id );
+            messageDetailsIntent.putExtra("messageText", "test" ); // get the right message
+
+        if (isTablet) {
+
+            loadFragment(new MessageFragment(), R.id.tabletMessageDetailFrame, messageDetailsIntent.getExtras());
+        } else {
+
+            startActivityForResult(messageDetailsIntent, MESSAGE_DETAILS_RESPONSE);
+        }
     }
 
     public class ChatAdapter extends ArrayAdapter<String> {
@@ -113,6 +190,16 @@ public class ChatWindow extends AppCompatActivity {
         @Override
         public String getItem(int position) {
             return chatMessages.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            cursor.moveToPosition(position);
+
+            int columnIndex = cursor.getColumnIndex(chatDatabaseHelper.KEY_ID);
+            Long id = cursor.getLong(columnIndex);
+
+            return id;
         }
 
         @Override

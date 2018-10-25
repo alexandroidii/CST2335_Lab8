@@ -79,13 +79,13 @@ public class WeatherForecast extends AppCompatActivity {
                     if (xpp.getEventType() == XmlPullParser.START_TAG) {
                         if (xpp.getName().equals("temperature")) {
                             currentTemp = xpp.getAttributeValue(null, "value");
-                            publishProgress((new Integer[]{25})); //telling android to update the gui
+                            publishProgress(25); //telling android to update the gui
 
                             minTemp = xpp.getAttributeValue(null, "min");
-                            publishProgress((new Integer[]{50})); //telling android to update the gui
+                            publishProgress(50); //telling android to update the gui
 
                             maxTemp = xpp.getAttributeValue(null, "max");
-                            publishProgress((new Integer[]{75})); //telling android to update the gui
+                            publishProgress(75); //telling android to update the gui
 
                             Log.i("XML tempurature:", currentTemp + minTemp + maxTemp);
 
@@ -131,16 +131,6 @@ public class WeatherForecast extends AppCompatActivity {
 
             } catch (Exception me) {
                 Log.e("AsyncTask", "Malformed URL:" + me.getMessage());
-            }
-
-            try {
-                for (int i = 0; i < urls.length; i++) {
-                    Thread.sleep(1000);
-                    publishProgress((new Integer[]{25, 50, 75})); //telling android to update the gui
-
-                }
-            } catch (Exception e) {
-
             }
 
             return "Weather Loaded Successfully";
