@@ -28,7 +28,7 @@ public class MessageDetails extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        Fragment phoneFragment = new MessageFragment();
+        Fragment phoneFragment = new MessageFragment(null);
         if(bundle != null){
             phoneFragment.setArguments(bundle);
         }

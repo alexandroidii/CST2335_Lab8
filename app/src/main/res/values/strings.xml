@@ -26,5 +26,7 @@
     <string name="minLabel">Min</string>
     <string name="maxLabel">Max</string>
     <string name="currentLabel">Current</string>
+    <string name="title_activity_test_toolbar">TestToolbar</string>
+    <string name="wannaGetPizza">Would you like to order Pizza?</string>
 
 </resources>

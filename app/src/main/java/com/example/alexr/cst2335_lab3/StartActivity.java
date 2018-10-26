@@ -17,6 +17,8 @@ public class StartActivity extends AppCompatActivity {
     protected static final String ACTIVITY_NAME = "1234 StartActivity";
     protected static final int REQUEST = 5;
     protected static final int CHAT_REQUEST = 2;
+    protected static final int WEATHER_REQUEST = 3;
+    protected static final int TOOLBAR_REQUEST = 4;
 
 
     @Override
@@ -42,7 +44,15 @@ public class StartActivity extends AppCompatActivity {
         btnWeatherForecast.setOnClickListener(
                 (View v) -> {
                     Log.i(ACTIVITY_NAME, "User clicked Weather Forecast");
-                    startActivityForResult(new Intent(this, WeatherForecast.class),CHAT_REQUEST);
+                    startActivityForResult(new Intent(this, WeatherForecast.class),WEATHER_REQUEST);
+                }
+        );
+
+        Button btnTestToolbar = (Button)findViewById(R.id.btnTestToolbar);
+        btnTestToolbar.setOnClickListener(
+                (View v) -> {
+                    Log.i(ACTIVITY_NAME, "User clicked Test Toolbar");
+                    startActivityForResult(new Intent(this, TestToolbar.class),TOOLBAR_REQUEST);
                 }
         );
 

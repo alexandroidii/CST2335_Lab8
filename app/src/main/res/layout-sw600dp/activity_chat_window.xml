@@ -9,19 +9,21 @@
     <ListView
         android:id="@+id/chatListView"
         android:layout_width="300dp"
-        android:layout_height="match_parent"
+        android:layout_height="415dp"
         android:layout_alignTop="@id/chatSendBtn"
         android:layout_alignBottom="@id/chatSendBtn"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="126dp"
-        android:layout_marginBottom="68dp" />
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="724dp"
+        android:layout_marginBottom="48dp" />
 
 
     <EditText
         android:id="@+id/chatMessageEditText"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@id/chatListView"
         android:layout_alignBottom="@id/chatListView"
@@ -36,20 +38,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="132dp"
+        android:layout_marginEnd="724dp"
         android:layout_marginBottom="0dp"
         android:text="@string/chatSendText"
         tools:layout_alignParentRight="false" />
 
     <FrameLayout
         android:id="@+id/tabletMessageDetailFrame"
-        android:layout_width="match_parent"
+        android:layout_width="723dp"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="126dp"
-        android:layout_marginEnd="119dp"
-        android:layout_toEndOf="@id/chatListView">
+        android:layout_toStartOf="@id/chatListView">
 
     </FrameLayout>
 

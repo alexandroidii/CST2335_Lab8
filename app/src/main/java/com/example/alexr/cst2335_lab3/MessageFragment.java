@@ -15,14 +15,23 @@ import android.widget.TextView;
 
 public class MessageFragment extends Fragment {
 
-    private static final String ACTIVITY_NAME = "1234 MessageFragment";
+    protected static final String ACTIVITY_NAME = "1234 MessageFragment";
 
+    ChatWindow chatWindow;
     FragmentActivity listener;
 
+    public MessageFragment(){
+
+    }
+
+    public MessageFragment(ChatWindow chatWindow) {
+        this.chatWindow = chatWindow;
+    }
+
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof Activity) {
+        if (context instanceof Activity) {
             this.listener = (FragmentActivity) context;
         }
     }
@@ -36,30 +45,36 @@ public class MessageFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState){
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("Fragement 1", "onActivityCreated");
+        Log.i(ACTIVITY_NAME, "onActivityCreated");
 
-        Intent intent = getActivity().getIntent();
+        Intent intent = listener.getIntent();
         Bundle bundle = getArguments();
         intent.putExtras(bundle);
+        boolean isTablet = bundle.getBoolean("isTablet");
 
         Long id = bundle.getLong("messageId");
-        String messageDetails = bundle.getString("message");
+        String messageDetails = bundle.getString("messageText");
 
-        TextView messageIdTextView = (TextView)getView().findViewById(R.id.messageDetailIdTextView);
+        TextView messageIdTextView = (TextView) listener.findViewById(R.id.messageDetailIdTextView);
         messageIdTextView.setText(id.toString());
 
-        TextView messageDetailsTextView = (TextView)getView().findViewById(R.id.messageDetailTextView);
+        TextView messageDetailsTextView = (TextView) listener.findViewById(R.id.messageDetailTextView);
         messageDetailsTextView.setText(messageDetails);
 
-        Button deleteMessageBtn = (Button)getView().findViewById(R.id.deleteMessageBtn);
+        Button deleteMessageBtn = (Button) listener.findViewById(R.id.deleteMessageBtn);
 
         deleteMessageBtn.setOnClickListener(
-                (View v) ->{
-                    Log.i(ACTIVITY_NAME, "Deleting item #" + bundle.getLong("id"));
-                    getActivity().setResult(getActivity().RESULT_OK, intent);
-                    getActivity().finish();
+                (View v) -> {
+                    Log.i(ACTIVITY_NAME, "Deleting item #" + id);
+                    listener.setResult(listener.RESULT_OK, intent);
+                    if (isTablet) {
+                        chatWindow.deleteMessage(intent);
+                        chatWindow.removeFragment(this);
+                    } else {
+                        listener.finish();
+                    }
                 }
 
         );
@@ -67,7 +82,7 @@ public class MessageFragment extends Fragment {
     }
 
     @Override
-    public void onDetach(){
+    public void onDetach() {
         super.onDetach();
         listener = null;
     }

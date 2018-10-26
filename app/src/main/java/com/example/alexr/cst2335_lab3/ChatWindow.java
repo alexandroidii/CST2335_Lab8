@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +34,9 @@ public class ChatWindow extends AppCompatActivity implements AdapterView.OnItemC
     Button chatSendBtn;
     Cursor cursor;
     boolean isTablet = false;
+
+    SQLiteDatabase db;
+    ChatAdapter messageAdapter;
 
     ArrayList<String> chatMessages = new ArrayList<>();
 
@@ -65,7 +69,7 @@ public class ChatWindow extends AppCompatActivity implements AdapterView.OnItemC
         chatMessageEditText = (EditText) findViewById(R.id.chatMessageEditText);
         chatSendBtn = (Button) findViewById(R.id.chatSendBtn);
 
-        SQLiteDatabase db = chatDatabaseHelper.getWritableDatabase();
+        db = chatDatabaseHelper.getWritableDatabase();
 
         cursor = db.rawQuery("select * from " + chatDatabaseHelper.TABLE_NAME, null);
 
@@ -86,7 +90,7 @@ public class ChatWindow extends AppCompatActivity implements AdapterView.OnItemC
 
 
         //in this case, "this" is the ChatWindow, which is-A Context object
-        ChatAdapter messageAdapter = new ChatAdapter(this);
+        messageAdapter = new ChatAdapter(this);
         chatListView.setAdapter(messageAdapter);
 
 
@@ -122,9 +126,34 @@ public class ChatWindow extends AppCompatActivity implements AdapterView.OnItemC
     public void onActivityResult(int requestCode, int responseCode, Intent data) {
         if (requestCode == MESSAGE_DETAILS_RESPONSE && responseCode == RESULT_OK) {
             Log.i(ACTIVITY_NAME, "Returned to ChatWindow.onActivityResult");
+            deleteMessage(data);
         } else {
             super.onActivityResult(requestCode, responseCode, data);
         }
+    }
+
+    public void deleteMessage(Intent data){
+        Bundle bundle = data.getExtras();
+        int position = bundle.getInt("messagePosition");
+        int id = bundle.getInt("messageId");
+        chatMessages.remove(position);
+
+        //https://stackoverflow.com/questions/8708295/how-to-delete-a-row-from-a-table-in-sqlite-android
+        db.execSQL("delete from "
+                + chatDatabaseHelper.TABLE_NAME
+                + " where "
+                + chatDatabaseHelper.KEY_ID
+                + " = ? ", new String[]{String.valueOf(id)} );
+
+        messageAdapter.notifyDataSetChanged(); //this restarts the process of getCount()/getView()
+    }
+
+    //https://stackoverflow.com/questions/9911851/cant-remove-a-fragment-from-framelayout
+    public void removeFragment(Fragment fragment){
+        getSupportFragmentManager().beginTransaction()
+                .remove(fragment)
+                .commit();
+        fragment = null;
     }
 
     /*
@@ -164,13 +193,18 @@ public class ChatWindow extends AppCompatActivity implements AdapterView.OnItemC
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
+            String message = chatMessages.get(position);
             Intent messageDetailsIntent = new Intent(ChatWindow.this, MessageDetails.class );
             messageDetailsIntent.putExtra("messageId", id );
-            messageDetailsIntent.putExtra("messageText", "test" ); // get the right message
+            messageDetailsIntent.putExtra("messageText", message ); // get the right message
+            messageDetailsIntent.putExtra("messagePosition", position);
+            messageDetailsIntent.putExtra("isTablet", isTablet);
+
+        Bundle bundle = messageDetailsIntent.getExtras();
 
         if (isTablet) {
 
-            loadFragment(new MessageFragment(), R.id.tabletMessageDetailFrame, messageDetailsIntent.getExtras());
+            loadFragment(new MessageFragment(this), R.id.tabletMessageDetailFrame, messageDetailsIntent.getExtras());
         } else {
 
             startActivityForResult(messageDetailsIntent, MESSAGE_DETAILS_RESPONSE);
@@ -194,10 +228,11 @@ public class ChatWindow extends AppCompatActivity implements AdapterView.OnItemC
 
         @Override
         public long getItemId(int position) {
+            cursor.moveToFirst();
             cursor.moveToPosition(position);
 
             int columnIndex = cursor.getColumnIndex(chatDatabaseHelper.KEY_ID);
-            Long id = cursor.getLong(columnIndex);
+            long id = cursor.getLong(columnIndex);
 
             return id;
         }
